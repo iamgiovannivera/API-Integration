@@ -1,0 +1,283 @@
+1. Project Structure
+css
+
+
+
+
+pokeapi_integration/
+│
+├── css/
+│   └── styles.css
+│
+├── js/
+│   └── script.js
+│
+├── index.html
+├── search.html
+└── details.html
+
+
+
+
+
+2. HTML Files
+index.html
+
+html
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon World</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Pokémon World</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="search.html">Search Pokémon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="jumbotron mt-4">
+            <h1 class="display-4">Welcome to the Pokémon World!</h1>
+            <p class="lead">Explore the fascinating world of Pokémon and discover detailed information about your favorite characters.</p>
+            <hr class="my-4">
+            <p>Get started by searching for a Pokémon or viewing their details.</p>
+            <a class="btn btn-primary btn-lg" href="search.html" role="button">Search Pokémon</a>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+search.html
+
+
+
+html
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Pokémon</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Pokémon World</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="search.html">Search Pokémon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="mt-4">
+            <h1>Search for a Pokémon</h1>
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="pokemonName">Enter Pokémon Name or ID:</label>
+                    <input type="text" class="form-control" id="pokemonName" placeholder="e.g., Pikachu or 25">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <div id="pokemonDetails" class="mt-4"></div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+details.html
+
+html
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Pokémon World</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="search.html">Search Pokémon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div id="pokemonDetails" class="mt-4"></div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
+
+
+
+3. CSS File
+css/styles.css
+
+css
+
+
+
+
+
+
+
+
+body {
+    padding-top: 50px;
+}
+
+.jumbotron {
+    background-color: #f8f9fa;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.card img {
+    max-height: 200px;
+    object-fit: cover;
+}
+
+
+
+
+4. JavaScript File
+js/script.js
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) {
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pokemonName = document.getElementById('pokemonName').value.toLowerCase();
+            const pokemonDetails = document.getElementById('pokemonDetails');
+
+            if (pokemonName) {
+                try {
+                    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+                    if (!response.ok) {
+                        throw new Error('Pokémon not found');
+                    }
+                    const data = await response.json();
+                    displayPokemonDetails(data, pokemonDetails);
+                } catch (error) {
+                    pokemonDetails.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                }
+            }
+        });
+    }
+
+    const displayPokemonDetails = (data, container) => {
+        container.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">${data.name}</h5>
+                    <img src="${data.sprites.front_default}" class="card-img-top" alt="${data.name}">
+                    <p class="card-text"><strong>Height:</strong> ${data.height}</p>
+                    <p class="card-text"><strong>Weight:</strong> ${data.weight}</p>
+                    <p class="card-text"><strong>Abilities:</strong> ${data.abilities.map(ability => ability.ability.name).join(', ')}</p>
+                    <a href="details.html?id=${data.id}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        `;
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const pokemonId = params.get('id');
+    if (pokemonId) {
+        fetchPokemonDetails(pokemonId);
+    }
+
+    async function fetchPokemonDetails(id) {
+        const pokemonDetails = document.getElementById('pokemonDetails');
+        try {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            if (!response.ok) {
+                throw new Error('Pokémon not found');
+            }
+            const data = await response.json();
+            displayFullPokemonDetails(data, pokemonDetails);
+        } catch (error) {
+            pokemonDetails.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+        }
+    }
+
+    const displayFullPokemonDetails = (data, container) => {
+        container.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">${data.name}</h5>
+                    <img src="${data.sprites.front_default}" class="card-img-top" alt="${data.name}">
+                    <p class="card-text"><strong>Height:</strong> ${data.height}</p>
+                    <p class="card-text"><strong>Weight:</strong> ${data.weight}</p>
+                    <p class="card-text"><strong>Types:</strong> ${data.types.map(type => type.type.name).join(', ')}</p>
+                    <p class="card-text"><strong>Abilities:</strong> ${data.abilities.map(ability => ability.ability.name).join(', ')}</p>
+                    <p class="card-text"><strong>Base Stats:</strong></p>
+                    <ul>
+                        ${data.stats.map(stat => `<li>${stat.stat.name}: ${stat.base_stat}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+    };
+});
